@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const Department = require('../models/department.model');
 // const ObjectId = require('mongodb').ObjectId; Nie potrzebny już, ale bez mongoose obowiązkowy
 
 // After changes
@@ -131,6 +132,5 @@ router.delete('/departments/:id', (req, res) => {
     else res.json({ message: 'OK' });
   });
 });
-
-module.exports = router;
 */
+module.exports = router;

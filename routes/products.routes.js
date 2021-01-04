@@ -2,9 +2,85 @@
 
 const express = require('express');
 const router = express.Router();
-const db = require('./../db');
-const ObjectId = require('mongodb').ObjectId;
+const Products = require('../models/products.model');
+// const db = require('./../db');
+// const ObjectId = require('mongodb').ObjectId;
 
+// Mongoose
+
+// GET Products
+router.get('/products', async (req, res) => {
+  try {
+    res.json(await Products.find());
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+});
+
+// GET Random
+router.get('/products/random', async (req, res) => {
+  try {
+    const count = await Products.countDocuments();
+    const rand = Math.floor(Math.random() * count);
+    const product = await Products.findOne().skip(rand);
+    if (!product) res.status(404).json({ message: 'Not found' });
+    else res.json(product);
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+});
+
+// GET ID
+router.get('/products/:id', async (req, res) => {
+  try {
+    const product = await Products.findById(req.params.id);
+    if (!product) res.status(4040).json({ message: 'Not found' });
+    else res.json(product);
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+});
+
+// POST
+router.post('/products', async (req, res) => {
+  try {
+    const { name, client } = req.body;
+    const newProduct = new Products({ name: name, client: client });
+    await newProduct.save();
+    res.json({ message: 'OK' });
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+});
+
+// Put ID
+router.put('/products/:id', async (req, res) => {
+  const { name, client } = req.body;
+
+  try {
+    await Products.updateOne({ _id: req.params.id }, { $set: { name: name, client: client } });
+    res.json({ message: 'OK' });
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+});
+
+// Delete ProductsID
+router.delete('/products/:id', async (req, res) => {
+  try {
+    const product = await Products.findById(req.params.id);
+    if (product) {
+      await Products.deleteOne({ _id: req.params.id });
+      res.json({ message: 'OK' });
+    } else res.status(404).json({ message: 'Not found' });
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+});
+
+module.exports = router;
+////////////////////////////////////////////////////////////////////////////////////
+/*
 // After changes
 //GET Products
 router.get('/products', (req, res) => {
@@ -87,5 +163,4 @@ router.delete('/products/:id', (req, res) => {
 //   db = db.products.filter((item) => item.id != req.params.id);
 //   res.json({ message: 'OK' });
 // });
-
-module.exports = router;
+*/

@@ -6,4 +6,4 @@ const employeesSchema = new mongoose.Schema({
   department: { type: String, required: true },
 });
 
-module.exports = mongoose.model('Department', employeesSchema);
+module.exports = mongoose.model('Employee', employeesSchema);
