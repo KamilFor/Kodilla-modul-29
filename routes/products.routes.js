@@ -3,80 +3,29 @@
 const express = require('express');
 const router = express.Router();
 const Products = require('../models/products.model');
+const ProductsFunctions = require('../controllers/products/products.controller');
 // const db = require('./../db');
 // const ObjectId = require('mongodb').ObjectId;
 
 // Mongoose
 
 // GET Products
-router.get('/products', async (req, res) => {
-  try {
-    res.json(await Products.find());
-  } catch (err) {
-    res.status(500).json({ message: err });
-  }
-});
+router.get('/products', ProductsFunctions.getBasic);
 
 // GET Random
-router.get('/products/random', async (req, res) => {
-  try {
-    const count = await Products.countDocuments();
-    const rand = Math.floor(Math.random() * count);
-    const product = await Products.findOne().skip(rand);
-    if (!product) res.status(404).json({ message: 'Not found' });
-    else res.json(product);
-  } catch (err) {
-    res.status(500).json({ message: err });
-  }
-});
+router.get('/products/random', ProductsFunctions.getRandom);
 
 // GET ID
-router.get('/products/:id', async (req, res) => {
-  try {
-    const product = await Products.findById(req.params.id);
-    if (!product) res.status(4040).json({ message: 'Not found' });
-    else res.json(product);
-  } catch (err) {
-    res.status(500).json({ message: err });
-  }
-});
+router.get('/products/:id', ProductsFunctions.getId);
 
 // POST
-router.post('/products', async (req, res) => {
-  try {
-    const { name, client } = req.body;
-    const newProduct = new Products({ name: name, client: client });
-    await newProduct.save();
-    res.json({ message: 'OK' });
-  } catch (err) {
-    res.status(500).json({ message: err });
-  }
-});
+router.post('/products', ProductsFunctions.getId);
 
 // Put ID
-router.put('/products/:id', async (req, res) => {
-  const { name, client } = req.body;
-
-  try {
-    await Products.updateOne({ _id: req.params.id }, { $set: { name: name, client: client } });
-    res.json({ message: 'OK' });
-  } catch (err) {
-    res.status(500).json({ message: err });
-  }
-});
+router.put('/products/:id', ProductsFunctions.putBasic);
 
 // Delete ProductsID
-router.delete('/products/:id', async (req, res) => {
-  try {
-    const product = await Products.findById(req.params.id);
-    if (product) {
-      await Products.deleteOne({ _id: req.params.id });
-      res.json({ message: 'OK' });
-    } else res.status(404).json({ message: 'Not found' });
-  } catch (err) {
-    res.status(500).json({ message: err });
-  }
-});
+router.delete('/products/:id', ProductsFunctions.deleteBasic);
 
 module.exports = router;
 ////////////////////////////////////////////////////////////////////////////////////
