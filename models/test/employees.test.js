@@ -38,21 +38,10 @@ describe('Emplyoees', () => {
   it('should throw an error if "name" is too short or too long', () => {
     const cases = ['Abc', 'abcd', 'Lorem Ipsum, Lorem Ip']; // we test various cases, some of them are too short, some of them are too long
     for (let firstName of cases) {
-      const employe = new Emplyoees({ firstName, lastName });
+      const employe = new Emplyoees({ firstName });
 
       employe.validate((err) => {
         expect(err.errors.name).to.exist;
-      });
-    }
-  });
-  //Test 4
-  it('should not throw an error if "name" is okay', () => {
-    const cases = ['Management', 'Human Resources'];
-    for (let firstName of cases) {
-      const dep = new Emplyoees({ firstName });
-
-      dep.validate((err) => {
-        expect(err).to.not.exist;
       });
     }
   });
