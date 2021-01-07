@@ -4,17 +4,23 @@ const MongoMemoryServer = require('mongodb-memory-server').MongoMemoryServer;
 const mongoose = require('mongoose');
 
 describe('Department', () => {
+  // BAZA DANYCH
   before(async () => {
     try {
       const fakeDB = new MongoMemoryServer();
 
-      const uri = await fakeDB.getConnectionString();
+      const uri = await fakeDB.getUri();
 
       mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     } catch (err) {
       console.log(err);
     }
   });
+
+  after(() => {
+    mongoose.models = {};
+  });
+
   // READ
   describe('Reading data', () => {
     before(async () => {
@@ -24,6 +30,12 @@ describe('Department', () => {
       const testDepTwo = new Department({ name: 'Department #2' });
       await testDepTwo.save();
     });
+
+    after(async () => {
+      await Department.deleteMany();
+    });
+
+    //READING
     it('should return all the data with "find" method', async () => {
       const departments = await Department.find();
       const expectedLength = 2;
@@ -33,10 +45,8 @@ describe('Department', () => {
       const department = await Department.findOne({ name: 'Department #1' });
       expect(department.name).to.be.equal('Department #1');
     });
-    after(async () => {
-      await Department.deleteMany();
-    });
   });
+
   // CREATE
   describe('Creating data', () => {
     it('should insert new document with "insertOne" method', async () => {
@@ -64,6 +74,12 @@ describe('Department', () => {
       const testDepTwo = new Department({ name: 'Department #2' });
       await testDepTwo.save();
     });
+
+    afterEach(async () => {
+      await Department.deleteMany();
+    });
+
+    // Methods
     it('should properly update one document with "updateOne" method', async () => {
       await Department.updateOne({ name: 'Department #1' }, { $set: { name: '=Department #1=' } });
       const updatedDepartment = await Department.findOne({ name: '=Department #1=' });
@@ -85,10 +101,6 @@ describe('Department', () => {
       expect(departments[0].name).to.be.equal('Updated!');
       expect(departments[1].name).to.be.equal('Updated!');
     });
-
-    afterEach(async () => {
-      await Department.deleteMany();
-    });
   });
 
   // DELETE
@@ -99,6 +111,10 @@ describe('Department', () => {
 
       const testDepTwo = new Department({ name: 'Department #2' });
       await testDepTwo.save();
+    });
+
+    afterEach(async () => {
+      await Department.deleteMany();
     });
 
     it('should properly remove one document with "deleteOne" method', async () => {
@@ -119,13 +135,5 @@ describe('Department', () => {
       const departments = await Department.find();
       expect(departments.length).to.be.equal(0);
     });
-
-    afterEach(async () => {
-      await Department.deleteMany();
-    });
-  });
-
-  after(() => {
-    mongoose.models = {};
   });
 });
