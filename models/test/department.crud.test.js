@@ -23,7 +23,7 @@ describe('Department', () => {
 
   // READ
   describe('Reading data', () => {
-    before(async () => {
+    beforeEach(async () => {
       const testDepOne = new Department({ name: 'Department #1' });
       await testDepOne.save();
 
@@ -31,7 +31,7 @@ describe('Department', () => {
       await testDepTwo.save();
     });
 
-    after(async () => {
+    afterEach(async () => {
       await Department.deleteMany();
     });
 

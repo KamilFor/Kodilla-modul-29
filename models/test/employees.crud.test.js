@@ -27,9 +27,9 @@ describe('Employee', () => {
     // BAZA DANYCH
     beforeEach(async () => {
       const employeeOne = new Employee({ firstName: 'Kamil', lastName: 'Fornalski', department: 'IT' });
+      const employeeTwo = new Employee({ firstName: 'Mateo', lastName: 'Pinowski', department: 'department' });
       await employeeOne.save();
 
-      const employeeTwo = new Employee({ firstName: 'Mateo', lastName: 'Pinowski', department: 'department' });
       await employeeTwo.save();
     });
 
